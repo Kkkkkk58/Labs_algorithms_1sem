@@ -1,6 +1,9 @@
 # C executables and compiled files
 *.o
 *.exe
+# Input and output files
+*.in
+*.out
 # Some VS Code Runner extension trash
 *tempCodeRunnerFile.*
 # Folders
