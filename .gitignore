@@ -1,0 +1,9 @@
+# C executables and compiled files
+*.o
+*.exe
+# Some VS Code Runner extension trash
+*tempCodeRunnerFile.*
+# Folders
+/.idea
+/.vscode
+/Patterns
