@@ -2,7 +2,7 @@ def new_lamp(penult, last):
     return 2 * last - penult + 2
 
 
-def binsearch(left, right):
+def garland(left, right):
     array = [0] * n
     array[0] = a
     for j in range(30):
@@ -26,7 +26,7 @@ fout = open("garland.out", "w")
 
 n, a = map(float, fin.readline().split())
 n = int(n)
-print(round(binsearch(0, a), 2), file=fout)
+print(round(garland(0, a), 2), file=fout)
 
 fin.close()
 fout.close()
