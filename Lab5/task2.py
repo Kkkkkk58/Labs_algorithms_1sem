@@ -1,13 +1,13 @@
-def check_tree(element, min_value, max_value):
-    if element[0] < min_value or element[0] > max_value:
-        return False
-    left_correct = right_correct = True
+def check_tree(element):
     if element[1] != 0:
-        left_correct = check_tree(array[element[1] - 1], min_value, element[0] - 1)
+        check_tree(array[element[1] - 1])
+    if len(ordered_array) > 0:
+        if ordered_array[-1] >= element[0]:
+            return False
+    ordered_array.append(element[0])
     if element[2] != 0:
-        right_correct = check_tree(array[element[2] - 1], element[0] + 1, max_value)
-    return left_correct and right_correct
-
+        check_tree(array[element[2] - 1])
+    return True
 
 fin = open("check.in")
 fout = open("check.out", "w")
@@ -20,7 +20,8 @@ else:
     for i in range(n):
         value, left, right = map(int, fin.readline().split())
         array.append([value, left, right])
-    if check_tree(array[0], -10 ** 9 - 1, 10 ** 9 + 1):
+    ordered_array = []
+    if check_tree(array[0]):
         print("YES", file=fout)
     else:
         print("NO", file=fout)
