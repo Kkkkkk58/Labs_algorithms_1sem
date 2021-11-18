@@ -3,13 +3,13 @@ prev = float("inf")
 
 def check_tree(element):
     global prev
-    if element[1] != 0:
-        check_tree(array[element[1] - 1])
+    if element[1] != 0 and not check_tree(array[element[1] - 1]):
+        return False
     if prev != float("inf") and element[0] <= prev:
         return False
     prev = element[0]
     if element[2] != 0:
-        check_tree(array[element[2] - 1])
+        return check_tree(array[element[2] - 1])
     return True
 
 
