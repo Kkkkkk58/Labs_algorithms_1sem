@@ -1,13 +1,17 @@
+prev = float("inf")
+
+
 def check_tree(element):
+    global prev
     if element[1] != 0:
         check_tree(array[element[1] - 1])
-    if len(ordered_array) > 0:
-        if ordered_array[-1] >= element[0]:
-            return False
-    ordered_array.append(element[0])
+    if prev != float("inf") and element[0] <= prev:
+        return False
+    prev = element[0]
     if element[2] != 0:
         check_tree(array[element[2] - 1])
     return True
+
 
 fin = open("check.in")
 fout = open("check.out", "w")
