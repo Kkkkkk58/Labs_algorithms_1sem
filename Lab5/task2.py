@@ -1,50 +1,12 @@
-class Queue:
-    def __init__(self):
-        self.array = [0] * n
-        self.head = 0
-        self.tail = 0
-        self.size = 0
-
-    def push_in(self, value):
-        if self.tail == n:
-            self.tail = 0
-        self.array[self.tail] = value
-        self.tail += 1
-        self.size += 1
-
-    def pop_out(self):
-        self.head += 1
-        if self.head == n:
-            self.head = 0
-        self.size -= 1
-
-
-def check_tree(root_element):
-    is_correct = True
-    queue = Queue()
-    queue.push_in(root_element)
-    while queue.size > 0:
-        nodes_on_level = queue.size
-        while nodes_on_level > 0:
-            node = queue.array[queue.head]
-            queue.pop_out()
-            if node[1] != 0:
-                left_child = array[node[1] - 1]
-                if left_child[0] >= node[0]:
-                    is_correct = False
-                    break
-                queue.push_in(left_child)
-            if node[2] != 0:
-                right_child = array[node[2] - 1]
-                if right_child[0] <= node[0]:
-                    is_correct = False
-                    break
-                queue.push_in(right_child)
-            nodes_on_level -= 1
-        if not is_correct:
-            break
-    return is_correct
-
+def check_tree(element, min_value, max_value):
+    if element[0] < min_value or element[0] > max_value:
+        return False
+    left_correct = right_correct = True
+    if element[1] != 0:
+        left_correct = check_tree(array[element[1] - 1], min_value, element[0] - 1)
+    if element[2] != 0:
+        right_correct = check_tree(array[element[2] - 1], element[0] + 1, max_value)
+    return left_correct and right_correct
 
 
 fin = open("check.in")
@@ -58,7 +20,7 @@ else:
     for i in range(n):
         value, left, right = map(int, fin.readline().split())
         array.append([value, left, right])
-    if check_tree(array[0]):
+    if check_tree(array[0], -10 ** 9 - 1, 10 ** 9 + 1):
         print("YES", file=fout)
     else:
         print("NO", file=fout)
