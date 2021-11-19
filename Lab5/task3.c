@@ -215,23 +215,20 @@ struct Node *tree_min(struct Node *tree) {
 
 struct Node *parent(struct Node *tree, long value) {
     struct Node *tmp = tree;
-    while (tmp != NULL && tmp->left != NULL && tmp->right != NULL
-    && tmp->left->value != value && tmp->right->value != value) {
-        if (tmp->value < value) {
-            tmp = tmp->right;
-        }
-        else if (tmp->value > value) {
-            tmp = tmp->left;
-        }
+    struct Node *pa;
+  while(tmp != NULL && tmp->value != value) {
+       pa = tmp;
+       if (tmp->value > value) {
+         tmp = tmp->left;
+       }
+       else {
+         tmp = tmp->right; 
+       }
     }
-
-    if (tmp != NULL && (tmp->left != NULL && tmp->left->value == value || 
-    tmp->right != NULL && tmp->right->value == value)) {
-        return tmp;
-    }
-    else {
+    if (tmp == NULL) {
         return NULL;
     }
+    return pa;
 }
 
 
