@@ -27,7 +27,27 @@ def search(tree, label):
     return tree.label[1]
 
 
-def quack(command):
+fin = open("quack.in")
+fout = open("quack.out", "w")
+commands_array = []
+queue = Queue()
+registers = [0] * 26
+first_insertion = True
+
+for line in fin:
+    if line == "\n":
+        break
+    commands_array.append(line.rstrip("\n"))
+    if line[0] == ":":
+        if first_insertion:
+            labels = Node([line.rstrip("\n"), len(commands_array) - 1])
+            first_insertion = False
+        else:
+            labels = insert(labels, [line.rstrip("\n"), len(commands_array) - 1])
+
+command_index = 0
+while command_index < len(commands_array):
+    command = commands_array[command_index]
     if command == "+":
         x = queue.get()
         y = queue.get()
@@ -77,66 +97,38 @@ def quack(command):
             register_number = ord(command[1]) - ord("a")
             print(chr(registers[register_number] % 256), end="", file=fout)
     elif command[0] == ":":
-        return
+        command_index += 1
+        continue
     elif command[0] == "J":
         label = ":" + command[1:]
         command_index = search(labels, label)
-        for j in range(command_index + 1, len(commands_array)):
-            quack(commands_array[j])
-        exit()
+        continue
     elif command[0] == "Z":
         register_number = ord(command[1]) - ord("a")
         if registers[register_number] == 0:
             label = ":" + command[2:]
             command_index = search(labels, label)
-            for j in range(command_index + 1, len(commands_array)):
-                quack(commands_array[j])
-            exit()
+            continue
     elif command[0] == "E":
         register_1_number = ord(command[1]) - ord("a")
         register_2_number = ord(command[2]) - ord("a")
         if registers[register_1_number] == registers[register_2_number]:
             label = ":" + command[3:]
             command_index = search(labels, label)
-            for j in range(command_index + 1, len(commands_array)):
-                quack(commands_array[j])
-            exit()
+            continue
     elif command[0] == "G":
         register_1_number = ord(command[1]) - ord("a")
         register_2_number = ord(command[2]) - ord("a")
         if registers[register_1_number] > registers[register_2_number]:
             label = ":" + command[3:]
             command_index = search(labels, label)
-            for j in range(command_index + 1, len(commands_array)):
-                quack(commands_array[j])
-            exit()
+            continue
     elif command == "Q":
-        exit()
+        break
     else:
         value = int(command)
         queue.put(value)
-
-
-fin = open("quack.in")
-fout = open("quack.out", "w")
-commands_array = []
-queue = Queue()
-registers = [0] * 26
-first_insertion = True
-
-for line in fin:
-    if line == "\n":
-        break
-    commands_array.append(line.rstrip("\n"))
-    if line[0] == ":":
-        if first_insertion:
-            labels = Node([line.rstrip("\n"), len(commands_array) - 1])
-            first_insertion = False
-        else:
-            labels = insert(labels, [line.rstrip("\n"), len(commands_array) - 1])
-
-for command in commands_array:
-    quack(command)
+    command_index += 1
 
 fin.close()
 fout.close()
