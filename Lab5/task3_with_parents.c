@@ -13,6 +13,7 @@ struct Node *delete(struct Node *tree, long value);
 struct Node *exists(struct Node *tree, long value);
 struct Node *next(struct Node *tree, long value);
 struct Node *prev(struct Node *tree, long value);
+void inorderwalk(struct Node *tree);
 void free_tree(struct Node **tree);
 
 
@@ -29,9 +30,14 @@ int main() {
             new_node->value = value;
             new_node->left = new_node->right = new_node->parent = NULL;
             tree = insert(tree, new_node);
+            // inorderwalk(tree);
+            // printf("\n");
         }
         else if (line[0] == 'd') {
             tree = delete(tree, value);
+            printf("ADFRE ");
+            inorderwalk(tree);
+            printf("\n");
         }
         else if (line[0] == 'e') {
             if (exists(tree, value)) {
@@ -112,7 +118,6 @@ struct Node *delete(struct Node *tree, long value) {
             tree = NULL;
         }
         free(element);
-        
     }
     else if (element->left == NULL && element->right != NULL) {
         if (element->parent != NULL) {
@@ -149,7 +154,7 @@ struct Node *delete(struct Node *tree, long value) {
     else {
         struct Node *successor = next(element, value);
         element->value = successor->value;
-        element->right = delete(element->right, successor->value);
+        delete(element->right, successor->value);
     }
     return tree;
 }
@@ -169,15 +174,14 @@ struct Node *exists(struct Node *tree, long value) {
 
 
 struct Node *next(struct Node *tree, long value) {
-    struct Node *curr = tree;
     struct Node *successor = NULL;
-    while (curr != NULL) {
-        if (curr->value > value) {
-            successor = curr;
-            curr = curr->left;
+    while (tree != NULL) {
+        if (tree->value > value) {
+            successor = tree;
+            tree = tree->left;
         }
         else {
-            curr = curr->right;
+            tree = tree->right;
         }
     }
     return successor;
@@ -185,15 +189,14 @@ struct Node *next(struct Node *tree, long value) {
 
 
 struct Node *prev(struct Node *tree, long value) {
-    struct Node *curr = tree;
     struct Node *predecessor = NULL;
-    while (curr != NULL) {
-        if (curr->value < value) {
-            predecessor = curr;
-            curr = curr->right;
+    while (tree != NULL) {
+        if (tree->value < value) {
+            predecessor = tree;
+            tree = tree->right;
         }
         else {
-            curr = curr->left;
+            tree = tree->left;
         }
     }
     return predecessor;
@@ -212,5 +215,14 @@ void free_tree(struct Node **tree) {
             free(*tree);
             (*tree) = NULL;
         }
+    }
+}
+
+
+void inorderwalk(struct Node *tree) {
+    if (tree != NULL) {
+        inorderwalk(tree->left);
+        printf("%ld ", tree->value);
+        inorderwalk(tree->right);
     }
 }
