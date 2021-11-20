@@ -38,6 +38,8 @@ int main() {
             printf("ADFRE ");
             inorderwalk(tree);
             printf("\n");
+            printf("ROOT %ld ", tree->value);
+            printf("LEFT %ld Right %ld\n", tree->left->value, tree->right->value);
         }
         else if (line[0] == 'e') {
             if (exists(tree, value)) {
