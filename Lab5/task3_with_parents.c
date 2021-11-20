@@ -207,7 +207,7 @@ void free_tree(struct Node **tree) {
         }
         else {
             free(*tree);
-            (*tree) = NULL;
+            *tree = NULL;
         }
     }
 }
