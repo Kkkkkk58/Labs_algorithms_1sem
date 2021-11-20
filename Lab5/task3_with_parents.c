@@ -1,19 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define MAXLEN 18
+#define MAXLEN 20
 
 struct Node {
     long value;
     struct Node *left, *right, *parent;
 };
 
-struct Node *insert(struct Node *tree, long value);
+struct Node *insert(struct Node *tree, struct Node *new_node);
 struct Node *delete(struct Node *tree, long value);
 struct Node *exists(struct Node *tree, long value);
 struct Node *next(struct Node *tree, long value);
 struct Node *prev(struct Node *tree, long value);
-void inorderwalk(struct Node *tree);
 void free_tree(struct Node **tree);
 
 
@@ -26,61 +25,59 @@ int main() {
         char *digit_ptr = strchr(line, ' ') + 1;
         long value = atol(digit_ptr);
         if (line[0] == 'i') {
-            tree = insert(tree, value);
+            struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
+            new_node->value = value;
+            new_node->left = new_node->right = new_node->parent = NULL;
+            tree = insert(tree, new_node);
         }
         else if (line[0] == 'd') {
             tree = delete(tree, value);
         }
         else if (line[0] == 'e') {
             if (exists(tree, value)) {
-                printf("true\n");
+                fprintf(fout, "true\n");
             }
             else {
-                printf("false\n");
+                fprintf(fout, "false\n");
             }            
         }
         else if (line[0] == 'n') {
-            struct Node *n = next(tree, value);
-            if (n) {
-                printf("%ld\n", n->value);
+            struct Node *successor = next(tree, value);
+            if (successor) {
+                fprintf(fout, "%ld\n", successor->value);
             }
             else {
-                printf("none\n");
+                fprintf(fout, "none\n");
             }            
         }
         else if (line[0] == 'p') {
-            
-            struct Node *p = prev(tree, value);
-            if (p) {
-                printf("%ld\n", p->value);
+            struct Node *predecessor = prev(tree, value);
+            if (predecessor) {
+                fprintf(fout, "%ld\n", predecessor->value);
             }
             else {
-                printf("none\n");
+                fprintf(fout, "none\n");
             }
         }
-
     }
     free_tree(&tree);
     return 0;
 }
 
 
-struct Node *insert(struct Node *tree, long value) {
-    struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
+struct Node *insert(struct Node *tree, struct Node *new_node) {
     if (tree == NULL) {
-        new_node->value = value;
-        new_node->left = new_node->right = new_node->parent = NULL;
         return new_node;
     }
-    else if (value < tree->value) {
-        tree->left = insert(tree->left, value);
-        new_node->parent = tree->left;
+    else if (new_node->value < tree->value) {
+        new_node->parent = tree;
+        tree->left = insert(tree->left, new_node);
     }
-    else if (value > tree->value) {
-        tree->right = insert(tree->right, value);
-        new_node->parent = tree->right;
+    else if (new_node->value > tree->value) {
+        new_node->parent = tree;
+        tree->right = insert(tree->right, new_node);
     }
-    else if (value == tree->value) {
+    else if (new_node->value == tree->value) {
         free(new_node);
     }
     return tree;    
@@ -90,7 +87,7 @@ struct Node *insert(struct Node *tree, long value) {
 struct Node *delete(struct Node *tree, long value) {
     struct Node *element = exists(tree, value);
     if (element == NULL) {
-        return NULL;
+        return tree;
     }
     int left_child = 0;
     int right_child = 0;
@@ -111,8 +108,11 @@ struct Node *delete(struct Node *tree, long value) {
                 element->parent->right = NULL;
             }
         }
+        else {
+            tree = NULL;
+        }
         free(element);
-        tree = NULL;
+        
     }
     else if (element->left == NULL && element->right != NULL) {
         if (element->parent != NULL) {
@@ -187,7 +187,6 @@ struct Node *next(struct Node *tree, long value) {
 struct Node *prev(struct Node *tree, long value) {
     struct Node *curr = tree;
     struct Node *predecessor = NULL;
-    //printf("GAVNO %ld SINA %ld", curr->value, curr->left);
     while (curr != NULL) {
         if (curr->value < value) {
             predecessor = curr;
@@ -198,15 +197,6 @@ struct Node *prev(struct Node *tree, long value) {
         }
     }
     return predecessor;
-}
-
-
-void inorderwalk(struct Node *tree) {
-    if (tree != NULL) {
-        inorderwalk(tree->left);
-        printf("%ld ", tree->value);
-        inorderwalk(tree->right);
-    }
 }
 
 
