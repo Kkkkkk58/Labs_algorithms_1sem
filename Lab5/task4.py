@@ -1,23 +1,21 @@
 from queue import Queue
-# from functools import lru_cache
-#
-# @lru_cache(None)
-# class Node:
-#     def __init__(self, label):
-#         self.label = label
-#         self.left = self.right = None
-#
-#
-# def insert(root, label):
-#     if root is None:
-#         return Node(label)
-#     else:
-#         if root.label[1] == label[0]:
-#             return root
-#         elif root.label[0] > label[0]:
-#             root.left = insert(root.left, label)
-#         else:
-#             root.right = insert(root.right, label)
+
+
+class Node:
+    def __init__(self, label):
+        self.label = label
+        self.left = self.right = None
+
+
+def insert(root, label):
+    if root is None:
+        return Node(label)
+    else:
+        if root.label[0] > label[0]:
+            root.left = insert(root.left, label)
+        else:
+            root.right = insert(root.right, label)
+    return root
 
 
 def search(root, label):
@@ -82,64 +80,65 @@ def quack(command):
         return
     elif command[0] == "J":
         label = ":" + command[1:]
-        for i in range(len(labels)):
-            if labels[i][0] == label:
-                command_index = labels[i][1]
-                for j in range(command_index + 1, len(commands_array)):
-                    quack(commands_array[j])
-                break
+        command_index = search(labels, label)
+        for j in range(command_index + 1, len(commands_array)):
+            quack(commands_array[j])
+        exit()
     elif command[0] == "Z":
         register_number = ord(command[1]) - ord("a")
         if registers[register_number] == 0:
             label = ":" + command[2:]
-            for i in range(len(labels)):
-                if labels[i][0] == label:
-                    command_index = labels[i][1]
-                    for j in range(command_index + 1, len(commands_array)):
-                        quack(commands_array[j])
-                    exit()
+            command_index = search(labels, label)
+            for j in range(command_index + 1, len(commands_array)):
+                quack(commands_array[j])
+            exit()
     elif command[0] == "E":
         register_1_number = ord(command[1]) - ord("a")
         register_2_number = ord(command[2]) - ord("a")
         if registers[register_1_number] == registers[register_2_number]:
             label = ":" + command[3:]
-            for i in range(len(labels)):
-                if labels[i][0] == label:
-                    command_index = labels[i][1]
-                    for j in range(command_index + 1, len(commands_array)):
-                        quack(commands_array[j])
-                    exit()
+            command_index = search(labels, label)
+            for j in range(command_index + 1, len(commands_array)):
+                quack(commands_array[j])
+            exit()
     elif command[0] == "G":
         register_1_number = ord(command[1]) - ord("a")
         register_2_number = ord(command[2]) - ord("a")
         if registers[register_1_number] > registers[register_2_number]:
             label = command[3:]
-            for i in range(len(labels)):
-                if labels[i][0] == label:
-                    command_index = labels[i][1]
-                    for j in range(command_index + 1, len(commands_array)):
-                        quack(commands_array[j])
-                    exit()
+            command_index = search(labels, label)
+            for j in range(command_index + 1, len(commands_array)):
+                quack(commands_array[j])
+            exit()
     elif command == "Q":
-        return
+        exit()
     else:
         value = int(command)
         queue.put(value)
 
 
+def inorder(root):
+    if root:
+        inorder(root.left)
+        print(root.label)
+        inorder(root.right)
 
 fin = open("quack.in")
 fout = open("quack.out", "w")
-labels = []
 commands_array = []
 queue = Queue()
 registers = [0] * 26
+first_insertion = True
 for line in fin:
     if line == "\n":
         break
     commands_array.append(line.rstrip("\n"))
     if line[0] == ":":
-        labels.append([line.rstrip("\n"), len(commands_array) - 1])
+        if first_insertion:
+            labels = Node([line.rstrip("\n"), len(commands_array) - 1])
+            first_insertion = False
+        else:
+            labels = insert(labels, [line.rstrip("\n"), len(commands_array) - 1])
 for command in commands_array:
     quack(command)
 fin.close()
