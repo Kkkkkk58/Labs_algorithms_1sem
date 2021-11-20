@@ -1,22 +1,23 @@
 from queue import Queue
-
-
-class Node:
-    def __init__(self, label):
-        self.label = label
-        self.left = self.right = None
-
-
-def insert(root, label):
-    if root is None:
-        return Node(label)
-    else:
-        if root.label[1] == label[0]:
-            return root
-        elif root.label[0] > label[0]:
-            root.left = insert(root.left, label)
-        else:
-            root.right = insert(root.right, label)
+# from functools import lru_cache
+#
+# @lru_cache(None)
+# class Node:
+#     def __init__(self, label):
+#         self.label = label
+#         self.left = self.right = None
+#
+#
+# def insert(root, label):
+#     if root is None:
+#         return Node(label)
+#     else:
+#         if root.label[1] == label[0]:
+#             return root
+#         elif root.label[0] > label[0]:
+#             root.left = insert(root.left, label)
+#         else:
+#             root.right = insert(root.right, label)
 
 
 def search(root, label):
@@ -129,7 +130,7 @@ def quack(command):
 
 fin = open("quack.in")
 fout = open("quack.out", "w")
-labels = Node()
+labels = []
 commands_array = []
 queue = Queue()
 registers = [0] * 26
@@ -138,7 +139,7 @@ for line in fin:
         break
     commands_array.append(line.rstrip("\n"))
     if line[0] == ":":
-        insert(labels, [line, len(commands_array) - 1])
+        labels.append([line.rstrip("\n"), len(commands_array) - 1])
 for command in commands_array:
     quack(command)
 fin.close()
