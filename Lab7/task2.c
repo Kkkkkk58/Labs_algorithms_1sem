@@ -34,10 +34,8 @@ int main() {
 
     struct Node *tree = NULL;
     for (int i = 0; i < n; ++i) {
-        int value;
-        fscanf(fin, "%d", &value);
         struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
-        new_node->value = value;
+        fscanf(fin, "%d", &(new_node->value));
         new_node->right = new_node->left = NULL;
         tree = insert(tree, new_node);
         fscanf(fin, "%d %d", &(tree_arr[i][0]), &(tree_arr[i][1]));
@@ -114,6 +112,7 @@ struct Node *big_left_rotation(struct Node *tree) {
     struct Node *imbalanced_chain = right_elem->left;
     struct Node *subchain_right = imbalanced_chain->right;
     struct Node *subchain_left = imbalanced_chain->left;
+
     root->right = subchain_left;
     right_elem->left = subchain_right;
     imbalanced_chain->right = right_elem;
@@ -127,6 +126,7 @@ struct Node *little_left_rotation(struct Node *tree) {
     struct Node *root = tree;
     struct Node *right_elem = tree->right;
     struct Node *elem_left_chain = right_elem->left;
+
     right_elem->left = root;
     root->right = elem_left_chain;
     tree = right_elem;
@@ -152,29 +152,34 @@ void free_tree(struct Node **tree) {
 
 void bfs_based_output(int n, struct Node *tree, FILE *fout) {
     struct Node **nodes_list = (struct Node **)malloc(n * sizeof(struct Node *));
-    for (int i =0; i < n; ++i) {
+    for (int i = 0; i < n; ++i) {
         nodes_list[i] = NULL;
     }
+    
     int head_pos = 0, tail_pos = 1, size = 1;
     struct Node *root = tree;
     nodes_list[0] = root;
+
     while (size != 0) {
         struct Node *curr = nodes_list[head_pos];
         ++head_pos;
         --size;
         int left = 0, right = 0;
+
         if (curr->left != NULL) {
             nodes_list[tail_pos] = curr->left;
             ++tail_pos;
             ++size;
             left = tail_pos;
         }
+
         if (curr->right != NULL) {
             nodes_list[tail_pos] = curr->right;
             ++tail_pos;
             ++size;
             right = tail_pos;
         }
+
         fprintf(fout, "%d %d %d\n", curr->value, left, right);
     }  
     free(nodes_list);
